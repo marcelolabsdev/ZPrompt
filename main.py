@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
 from services.openai_service import generate_prompt
@@ -39,9 +38,6 @@ class PromptResponse(BaseModel):
     prompt_type: str
     label: str
     timestamp: str
-
-
-PUBLIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
 
 
 @app.get("/api/health")
@@ -103,21 +99,3 @@ def get_sample_data():
         "total": 3,
         "timestamp": "2024-01-01T00:00:00Z",
     }
-
-
-@app.get("/favicon.ico")
-def favicon():
-    favicon_path = os.path.join(PUBLIC_DIR, "favicon.ico")
-    if os.path.exists(favicon_path):
-        return FileResponse(favicon_path)
-    raise HTTPException(status_code=404)
-
-
-@app.get("/")
-def serve_index():
-    index_path = os.path.join(PUBLIC_DIR, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path, media_type="text/html")
-    return JSONResponse(
-        {"message": "ZPrompt API", "docs": "/docs"}, media_type="application/json"
-    )
