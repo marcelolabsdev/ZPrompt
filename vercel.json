@@ -1,0 +1,13 @@
+{
+  "builds": [
+    { "src": "main.py", "use": "@vercel/python" },
+    { "src": "public/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "main.py" },
+    { "src": "/docs(.*)", "dest": "main.py" },
+    { "src": "/openapi.json", "dest": "main.py" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "main.py" }
+  ]
+}
