@@ -9,6 +9,3 @@ dependencies = [
     "uvicorn>=0.30.0",
     "pydantic>=2.0.0",
 ]
-
-[tool.vercel]
-entrypoint = "main:app"
