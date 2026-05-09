@@ -43,7 +43,7 @@ class PromptResponse(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    public_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
+    public_dir = os.path.join(os.getcwd(), "public")
     index_path = os.path.join(public_dir, "index.html")
     if os.path.exists(index_path):
         with open(index_path, "r", encoding="utf-8") as f:
@@ -53,7 +53,7 @@ def read_root():
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
-    public_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
+    public_dir = os.path.join(os.getcwd(), "public")
     favicon_path = os.path.join(public_dir, "favicon.ico")
     if os.path.exists(favicon_path):
         return FileResponse(favicon_path)
