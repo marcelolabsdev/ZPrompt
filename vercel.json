@@ -4,6 +4,7 @@
     { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/", "dest": "/index.html" },
     { "src": "/api/(.*)", "dest": "main.py" },
     { "src": "/docs(.*)", "dest": "main.py" },
     { "src": "/openapi.json", "dest": "main.py" },
