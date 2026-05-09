@@ -1,13 +1,10 @@
 import os
-import sys
 from datetime import datetime, timezone
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
 from services.openai_service import generate_prompt
@@ -42,6 +39,25 @@ class PromptResponse(BaseModel):
     prompt_type: str
     label: str
     timestamp: str
+
+
+@app.get("/", response_class=HTMLResponse)
+def read_root():
+    public_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
+    index_path = os.path.join(public_dir, "index.html")
+    if os.path.exists(index_path):
+        with open(index_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>ZPrompt</h1><p>Frontend no encontrado.</p>")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    public_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
+    favicon_path = os.path.join(public_dir, "favicon.ico")
+    if os.path.exists(favicon_path):
+        return FileResponse(favicon_path)
+    raise HTTPException(status_code=404)
 
 
 @app.get("/api/health")
