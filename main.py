@@ -1,13 +1,11 @@
 import os
 import sys
 from datetime import datetime, timezone
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 
 from services.openai_service import generate_prompt
@@ -42,6 +40,56 @@ class PromptResponse(BaseModel):
     prompt_type: str
     label: str
     timestamp: str
+
+
+@app.get("/api/debug")
+def debug_filesystem():
+    cwd = os.getcwd()
+    file_dir = os.path.dirname(os.path.abspath(__file__))
+    paths_to_check = [
+        os.path.join(cwd, "public"),
+        os.path.join(file_dir, "public"),
+        os.path.join(file_dir, "..", "public"),
+        "/var/task/public",
+        "/var/task/user/public",
+    ]
+    results = {
+        "cwd": cwd,
+        "file_dir": file_dir,
+        "cwd_files": os.listdir(cwd) if os.path.exists(cwd) else [],
+        "path_checks": {},
+    }
+    for p in paths_to_check:
+        results["path_checks"][p] = {
+            "exists": os.path.exists(p),
+            "files": os.listdir(p) if os.path.exists(p) else [],
+        }
+    return results
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    paths = [
+        os.path.join(os.getcwd(), "public", "favicon.ico"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "public", "favicon.ico"),
+    ]
+    for p in paths:
+        if os.path.exists(p):
+            return FileResponse(p)
+    raise HTTPException(status_code=404)
+
+
+@app.get("/")
+def serve_index():
+    paths = [
+        os.path.join(os.getcwd(), "public", "index.html"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "public", "index.html"),
+    ]
+    for p in paths:
+        if os.path.exists(p):
+            with open(p, "r", encoding="utf-8") as f:
+                return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>ZPrompt</h1><p>Frontend no encontrado. Visita <a href='/api/debug'>/api/debug</a> para diagnosticar.</p>")
 
 
 @app.get("/api/health")

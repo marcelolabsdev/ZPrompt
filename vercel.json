@@ -1,7 +1,14 @@
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/main" },
-    { "source": "/docs(.*)", "destination": "/api/main" },
-    { "source": "/openapi.json", "destination": "/api/main" }
+  "builds": [
+    { "src": "main.py", "use": "@vercel/python" },
+    { "src": "public/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/debug", "dest": "main.py" },
+    { "src": "/api/(.*)", "dest": "main.py" },
+    { "src": "/docs(.*)", "dest": "main.py" },
+    { "src": "/openapi.json", "dest": "main.py" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "main.py" }
   ]
 }
