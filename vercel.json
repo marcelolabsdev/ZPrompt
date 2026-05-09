@@ -1,6 +1,7 @@
 {
   "outputDirectory": "public",
   "rewrites": [
+    { "source": "/", "destination": "/index.html" },
     { "source": "/api/:path*", "destination": "/api/index" },
     { "source": "/docs:path*", "destination": "/api/index" },
     { "source": "/openapi.json", "destination": "/api/index" }
