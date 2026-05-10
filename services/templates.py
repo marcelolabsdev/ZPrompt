@@ -39,7 +39,7 @@ Genera un prompt que siga EXACTAMENTE esta estructura:
 ### CONTEXTO
 Proyecto: [NOMBRE Y DESCRIPCION BREVE - extraido de la descripcion del usuario]
 Stack: [LENGUAJE + FRAMEWORK + DB - detectado o sugerido]
-Entorno: [Vercel / LOCAL / DOCKER - segun la descripcion o sugerido]
+Entorno: Vercel (ajustar solo si el usuario especifica otro entorno)
 
 ### TAREA
 Iniciar estructura base del proyecto con [FUNCIONALIDAD PRINCIPAL - extraida de la descripcion].
