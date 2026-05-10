@@ -218,39 +218,73 @@
         }
     });
 
-    function getRealTimezoneOffset() {
-        var offset = -new Date().getTimezoneOffset();
-        try {
-            var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            if (tz && tz !== "UTC" && offset === 0) {
-                var now = new Date();
-                var utcStr = now.toLocaleString("en-US", { timeZone: "UTC" });
-                var localStr = now.toLocaleString("en-US", { timeZone: tz });
-                var utcDate = new Date(utcStr);
-                var localDate = new Date(localStr);
-                offset = (localDate - utcDate) / 60000;
-            }
-        } catch (e) {}
-        return offset;
-    }
-
-    function updatePeakInfo() {
-        var now = new Date();
-        var offset = getRealTimezoneOffset();
-
-        var isSpoofedUTC = false;
-        try {
-            var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            var lang = navigator.language || "";
-            if (offset === 0 && tz === "UTC" && lang.startsWith("es")) {
-                isSpoofedUTC = true;
-            }
-        } catch (e) {}
-
+    function offsetToTzName(offset) {
         var offsetH = Math.floor(Math.abs(offset) / 60);
         var offsetM = Math.abs(offset) % 60;
         var sign = offset >= 0 ? "+" : "-";
-        var offsetStr = "UTC" + sign + (offsetH < 10 ? "0" : "") + offsetH + ":" + (offsetM < 10 ? "0" : "") + offsetM;
+        return "UTC" + sign + (offsetH < 10 ? "0" : "") + offsetH + ":" + (offsetM < 10 ? "0" : "") + offsetM;
+    }
+
+    function calcOffsetFromTzName(tzName) {
+        try {
+            var now = new Date();
+            var utcStr = now.toLocaleString("en-US", { timeZone: "UTC" });
+            var localStr = now.toLocaleString("en-US", { timeZone: tzName });
+            return (new Date(localStr) - new Date(utcStr)) / 60000;
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    var cachedOffset = null;
+
+    function detectOffsetAsync() {
+        var browserOffset = -new Date().getTimezoneOffset();
+        try {
+            var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            if (tz && tz !== "UTC") {
+                cachedOffset = browserOffset;
+                return;
+            }
+        } catch (e) {}
+
+        if (browserOffset !== 0) {
+            cachedOffset = browserOffset;
+            return;
+        }
+
+        cachedOffset = 0;
+
+        fetch("https://ipapi.co/json/")
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data && data.timezone && data.timezone !== "UTC") {
+                    var realOffset = calcOffsetFromTzName(data.timezone);
+                    if (realOffset !== 0) {
+                        cachedOffset = realOffset;
+                        localStorage.setItem("zprompt-tz-offset", realOffset);
+                        localStorage.setItem("zprompt-tz-name", data.timezone);
+                        updatePeakInfo();
+                    }
+                }
+            })
+            .catch(function () {});
+    }
+
+    (function loadCachedTz() {
+        var cached = localStorage.getItem("zprompt-tz-offset");
+        if (cached !== null) {
+            cachedOffset = parseInt(cached, 10);
+        }
+    })();
+
+    detectOffsetAsync();
+
+    function updatePeakInfo() {
+        var now = new Date();
+        var offset = cachedOffset !== null ? cachedOffset : (-new Date().getTimezoneOffset());
+
+        var offsetStr = offsetToTzName(offset);
 
         var localDate = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (offset * 60000));
         var localH = localDate.getHours();
@@ -273,14 +307,10 @@
 
         var el = document.getElementById("peak-info");
         if (!el) return;
-        var html =
+        el.innerHTML =
             '<p class="' + statusColor + ' font-semibold">' + status + ' &middot; ' + msg + '</p>' +
             '<p class="mt-1">Tu hora: ' + timeStr + ' (' + offsetStr + ') &middot; Peak local: ' + peakLocalStartStr + ' - ' + peakLocalEndStr + '</p>' +
             '<p class="mt-1">GLM-5.1: 3x peak / 2x off-peak &middot; <span class="text-primary">1x off-peak hasta fin de junio</span></p>';
-        if (isSpoofedUTC) {
-            html += '<p class="mt-1 opacity-60">Tu navegador reporta UTC. Si tu zona horaria es diferente, puede estar bloqueada por privacidad.</p>';
-        }
-        el.innerHTML = html;
     }
     updatePeakInfo();
     setInterval(updatePeakInfo, 60000);

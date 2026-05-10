@@ -38,8 +38,8 @@ Genera un prompt que siga EXACTAMENTE esta estructura:
 
 ### CONTEXTO
 Proyecto: [NOMBRE Y DESCRIPCION BREVE - extraido de la descripcion del usuario]
-Stack: [LENGUAJE + FRAMEWORK + DB - detectado o sugerido. RECOMENDACION DE BD: Para apps moviles (Flutter, React Native, Swift, Kotlin) recomendar Firebase. Para web, API o backend recomendar Supabase.]
-Entorno: Vercel (ajustar solo si el usuario especifica otro entorno)
+Stack: [LENGUAJE + FRAMEWORK + DB - detectado o sugerido. RECOMENDACION DE BD: Para apps moviles (Flutter, React Native, Swift, Kotlin, Dart) recomendar Firebase. Para todo lo demas (web, API, backend, scripts, CLI) SIEMPRE recomendar Supabase. NUNCA recomendar Firebase para proyectos que no sean apps moviles.]
+Deploy: Vercel (solo incluir esta linea si es un proyecto web, API o backend. OMITIR completamente para apps moviles/celulares.)
 
 ### TAREA
 Iniciar estructura base del proyecto con [FUNCIONALIDAD PRINCIPAL - extraida de la descripcion].
