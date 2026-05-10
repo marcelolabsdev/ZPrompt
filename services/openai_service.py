@@ -18,6 +18,7 @@ async def generate_prompt(
     prompt_type: str,
     language: str | None = None,
     framework: str | None = None,
+    database: str | None = None,
 ) -> str:
     template = TEMPLATES.get(prompt_type)
     if not template:
@@ -25,12 +26,14 @@ async def generate_prompt(
 
     meta_prompt = template.format(user_input=text)
 
-    if language or framework:
-        context_parts = []
-        if language:
-            context_parts.append(f"Lenguaje principal: {language}")
-        if framework:
-            context_parts.append(f"Framework: {framework}")
+    context_parts = []
+    if language:
+        context_parts.append(f"Lenguaje principal: {language}")
+    if framework:
+        context_parts.append(f"Framework: {framework}")
+    if database:
+        context_parts.append(f"Base de datos: {database}")
+    if context_parts:
         meta_prompt += "\n\nContexto adicional del usuario:\n" + "\n".join(
             context_parts
         )

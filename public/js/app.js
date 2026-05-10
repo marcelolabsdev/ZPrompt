@@ -2,6 +2,7 @@
     var userInput = document.getElementById("user-input");
     var languageSelect = document.getElementById("language-select");
     var frameworkSelect = document.getElementById("framework-select");
+    var databaseSelect = document.getElementById("database-select");
     var generateBtn = document.getElementById("generate-btn");
     var btnText = document.getElementById("btn-text");
     var btnSpinner = document.getElementById("btn-spinner");
@@ -107,6 +108,7 @@
             prompt_type: selectedType,
             language: languageSelect.value || null,
             framework: frameworkSelect.value || null,
+            database: databaseSelect.value || null,
         };
 
         setLoading(true);
@@ -197,4 +199,41 @@
             }, 2000);
         }
     });
+
+    function updatePeakInfo() {
+        var now = new Date();
+        var utcH = now.getUTCHours();
+        var utcM = now.getUTCMinutes();
+        var offset = -now.getTimezoneOffset();
+        var offsetH = Math.floor(Math.abs(offset) / 60);
+        var offsetM = Math.abs(offset) % 60;
+        var sign = offset >= 0 ? "+" : "-";
+        var offsetStr = "UTC" + sign + (offsetH < 10 ? "0" : "") + offsetH + ":" + (offsetM < 10 ? "0" : "") + offsetM;
+
+        var localH = now.getHours();
+        var localM = now.getMinutes();
+        var timeStr = (localH < 10 ? "0" : "") + localH + ":" + (localM < 10 ? "0" : "") + localM;
+
+        var isPeak = utcH >= 6 && utcH < 10;
+        var status = isPeak ? "PEAK" : "OFF-PEAK";
+        var statusColor = isPeak ? "text-destructive" : "text-primary";
+        var msg = isPeak ? "Horas pico - uso limitado" : "Buen momento para usar Z.ai";
+
+        var peakStartUTC = 6;
+        var peakEndUTC = 10;
+        var localOffset = offset / 60;
+        var peakStartLocal = (peakStartUTC + localOffset + 24) % 24;
+        var peakEndLocal = (peakEndUTC + localOffset + 24) % 24;
+        var peakLocalStartStr = (peakStartLocal < 10 ? "0" : "") + Math.floor(peakStartLocal) + ":00";
+        var peakLocalEndStr = (peakEndLocal < 10 ? "0" : "") + Math.floor(peakEndLocal) + ":00";
+
+        var el = document.getElementById("peak-info");
+        if (!el) return;
+        el.innerHTML =
+            '<p class="' + statusColor + ' font-semibold">' + status + ' &middot; ' + msg + '</p>' +
+            '<p class="mt-1">Tu hora: ' + timeStr + ' (' + offsetStr + ') &middot; Peak local: ' + peakLocalStartStr + ' - ' + peakLocalEndStr + '</p>' +
+            '<p class="mt-1">GLM-5.1: 3x peak / 2x off-peak &middot; <span class="text-primary">1x off-peak hasta fin de junio</span></p>';
+    }
+    updatePeakInfo();
+    setInterval(updatePeakInfo, 60000);
 })();

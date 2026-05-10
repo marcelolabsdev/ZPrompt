@@ -16,9 +16,9 @@
     <header class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
         <div class="mx-auto flex h-14 max-w-4xl items-center px-4 sm:px-6">
             <div class="flex-1"></div>
-            <a href="/" class="flex items-center gap-2 text-xl font-semibold tracking-wider">
-                <i data-lucide="zap" class="h-5 w-5 text-primary"></i>
+            <a href="/" class="flex flex-col items-center text-xl font-semibold tracking-wider">
                 <span>ZPROMPT</span>
+                <span class="text-xs font-normal text-muted-foreground tracking-normal">Genera prompts estructurados para GLM</span>
             </a>
             <div class="flex-1 flex items-center justify-end gap-3">
                 <button id="theme-toggle" class="inline-flex items-center justify-center rounded-md border border-border bg-background p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer">
@@ -43,7 +43,7 @@
             <div>
                 <div class="grid grid-cols-4 gap-2">
                     <button data-type="system" class="prompt-type-card flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 transition-all hover:border-ring hover:shadow-sm cursor-pointer">
-                        <i data-lucide="monitor" class="h-4 w-4"></i>
+                        <i data-lucide="monitor" class="h-5 w-5"></i>
                         <span class="text-xs font-medium text-card-foreground">SYSTEM</span>
                     </button>
                     <button data-type="start" class="prompt-type-card flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 transition-all hover:border-ring hover:shadow-sm cursor-pointer">
@@ -51,7 +51,7 @@
                         <span class="text-xs font-medium text-card-foreground">START</span>
                     </button>
                     <button data-type="followup" class="prompt-type-card flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 transition-all hover:border-ring hover:shadow-sm cursor-pointer">
-                        <i data-lucide="repeat" class="h-4 w-4"></i>
+                        <i data-lucide="repeat" class="h-5 w-5"></i>
                         <span class="text-xs font-medium text-card-foreground">FOLLOW-UP</span>
                     </button>
                     <button data-type="debug" class="prompt-type-card flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 transition-all hover:border-ring hover:shadow-sm cursor-pointer">
@@ -71,7 +71,7 @@
                 ></textarea>
             </div>
 
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div>
                     <label for="language-select" class="mb-2 block text-sm font-medium text-muted-foreground">Lenguaje (opcional)</label>
                     <select id="language-select" class="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
@@ -108,6 +108,22 @@
                         <option value="Axum">Axum</option>
                         <option value="Laravel">Laravel</option>
                         <option value="Rails">Rails</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="database-select" class="mb-2 block text-sm font-medium text-muted-foreground">Base de datos (opcional)</label>
+                    <select id="database-select" class="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                        <option value="">Ninguna / Auto</option>
+                        <option value="Supabase">Supabase</option>
+                        <option value="PostgreSQL">PostgreSQL</option>
+                        <option value="MySQL">MySQL</option>
+                        <option value="MongoDB">MongoDB</option>
+                        <option value="SQLite">SQLite</option>
+                        <option value="Firebase">Firebase</option>
+                        <option value="Redis">Redis</option>
+                        <option value="MariaDB">MariaDB</option>
+                        <option value="PlanetScale">PlanetScale</option>
+                        <option value="CockroachDB">CockroachDB</option>
                     </select>
                 </div>
             </div>
@@ -162,7 +178,7 @@
     </main>
 
     <footer class="border-t border-border py-6 text-center text-xs text-muted-foreground">
-        <p>ZPROMPT &mdash; Generador de prompts estructurados para GLM</p>
+        <div id="peak-info"></div>
     </footer>
 
     <script src="/js/app.js"></script>

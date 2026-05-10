@@ -54,6 +54,8 @@ Iniciar estructura base del proyecto con [FUNCIONALIDAD PRINCIPAL - extraida de 
 2. Archivo principal configurado
 3. Modulo de [FUNCIONALIDAD PRINCIPAL]
 4. Comando exacto para correr el proyecto
+5. README.md con instrucciones de setup, instalacion y uso del proyecto
+6. LICENSE.md con licencia MIT
 
 Basaandote en esta descripcion del usuario, rellena todos los placeholders y adapta el prompt al contexto especifico del proyecto.
 
