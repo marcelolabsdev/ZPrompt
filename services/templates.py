@@ -38,7 +38,7 @@ Genera un prompt que siga EXACTAMENTE esta estructura:
 
 ### CONTEXTO
 Proyecto: [NOMBRE Y DESCRIPCION BREVE - extraido de la descripcion del usuario]
-Stack: [LENGUAJE + FRAMEWORK + DB - detectado o sugerido]
+Stack: [LENGUAJE + FRAMEWORK + DB - detectado o sugerido. RECOMENDACION DE BD: Para apps moviles (Flutter, React Native, Swift, Kotlin) recomendar Firebase. Para web, API o backend recomendar Supabase.]
 Entorno: Vercel (ajustar solo si el usuario especifica otro entorno)
 
 ### TAREA

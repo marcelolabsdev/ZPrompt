@@ -16,9 +16,9 @@
     <header class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
         <div class="mx-auto flex h-14 max-w-4xl items-center px-4 sm:px-6">
             <div class="flex-1"></div>
-            <a href="/" class="flex flex-col items-center text-xl font-semibold tracking-wider">
+            <a href="/" class="flex flex-col items-center gap-0.5 text-xl font-semibold tracking-wider">
                 <span>ZPROMPT</span>
-                <span class="text-xs font-normal text-muted-foreground tracking-normal">Genera prompts estructurados para GLM</span>
+                <span class="block text-[11px] font-normal text-muted-foreground tracking-normal">Genera prompts estructurados para GLM</span>
             </a>
             <div class="flex-1 flex items-center justify-end gap-3">
                 <button id="theme-toggle" class="inline-flex items-center justify-center rounded-md border border-border bg-background p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer">
@@ -30,13 +30,6 @@
     </header>
 
     <main class="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
-
-        <section class="mb-10 text-center">
-            <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
-                Genera prompts estructurados
-                <span class="text-primary">para GLM</span>
-            </h1>
-        </section>
 
         <section class="space-y-6">
 
@@ -114,12 +107,12 @@
                     <label for="database-select" class="mb-2 block text-sm font-medium text-muted-foreground">Base de datos (opcional)</label>
                     <select id="database-select" class="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                         <option value="">Ninguna / Auto</option>
-                        <option value="Supabase">Supabase</option>
+                        <option value="Supabase">Supabase (web/API)</option>
+                        <option value="Firebase">Firebase (apps moviles)</option>
                         <option value="PostgreSQL">PostgreSQL</option>
                         <option value="MySQL">MySQL</option>
                         <option value="MongoDB">MongoDB</option>
                         <option value="SQLite">SQLite</option>
-                        <option value="Firebase">Firebase</option>
                         <option value="Redis">Redis</option>
                         <option value="MariaDB">MariaDB</option>
                         <option value="PlanetScale">PlanetScale</option>

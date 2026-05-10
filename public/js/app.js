@@ -67,28 +67,46 @@
 
     initTheme();
 
-    document.querySelectorAll(".prompt-type-card").forEach(function (card) {
-        card.addEventListener("click", function () {
-            document.querySelectorAll(".prompt-type-card").forEach(function (c) {
-                c.classList.remove(
-                    "border-primary",
-                    "bg-primary/10",
-                    "ring-2",
-                    "ring-ring"
-                );
-            });
+    function selectType(type) {
+        document.querySelectorAll(".prompt-type-card").forEach(function (c) {
+            c.classList.remove(
+                "border-primary",
+                "bg-primary/10",
+                "ring-2",
+                "ring-ring"
+            );
+        });
+        var card = document.querySelector('[data-type="' + type + '"]');
+        if (card) {
             card.classList.add(
                 "border-primary",
                 "bg-primary/10",
                 "ring-2",
                 "ring-ring"
             );
-            selectedType = card.dataset.type;
-            validateForm();
+        }
+        selectedType = type;
+        validateForm();
+    }
+
+    document.querySelectorAll(".prompt-type-card").forEach(function (card) {
+        card.addEventListener("click", function () {
+            selectType(card.dataset.type);
         });
     });
 
+    selectType("start");
+
     userInput.addEventListener("input", validateForm);
+
+    userInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            if (!generateBtn.disabled) {
+                handleGenerate();
+            }
+        }
+    });
 
     function validateForm() {
         var hasText = userInput.value.trim().length >= 5;
@@ -200,20 +218,46 @@
         }
     });
 
+    function getRealTimezoneOffset() {
+        var offset = -new Date().getTimezoneOffset();
+        try {
+            var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            if (tz && tz !== "UTC" && offset === 0) {
+                var now = new Date();
+                var utcStr = now.toLocaleString("en-US", { timeZone: "UTC" });
+                var localStr = now.toLocaleString("en-US", { timeZone: tz });
+                var utcDate = new Date(utcStr);
+                var localDate = new Date(localStr);
+                offset = (localDate - utcDate) / 60000;
+            }
+        } catch (e) {}
+        return offset;
+    }
+
     function updatePeakInfo() {
         var now = new Date();
-        var utcH = now.getUTCHours();
-        var utcM = now.getUTCMinutes();
-        var offset = -now.getTimezoneOffset();
+        var offset = getRealTimezoneOffset();
+
+        var isSpoofedUTC = false;
+        try {
+            var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            var lang = navigator.language || "";
+            if (offset === 0 && tz === "UTC" && lang.startsWith("es")) {
+                isSpoofedUTC = true;
+            }
+        } catch (e) {}
+
         var offsetH = Math.floor(Math.abs(offset) / 60);
         var offsetM = Math.abs(offset) % 60;
         var sign = offset >= 0 ? "+" : "-";
         var offsetStr = "UTC" + sign + (offsetH < 10 ? "0" : "") + offsetH + ":" + (offsetM < 10 ? "0" : "") + offsetM;
 
-        var localH = now.getHours();
-        var localM = now.getMinutes();
+        var localDate = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (offset * 60000));
+        var localH = localDate.getHours();
+        var localM = localDate.getMinutes();
         var timeStr = (localH < 10 ? "0" : "") + localH + ":" + (localM < 10 ? "0" : "") + localM;
 
+        var utcH = now.getUTCHours();
         var isPeak = utcH >= 6 && utcH < 10;
         var status = isPeak ? "PEAK" : "OFF-PEAK";
         var statusColor = isPeak ? "text-destructive" : "text-primary";
@@ -221,18 +265,22 @@
 
         var peakStartUTC = 6;
         var peakEndUTC = 10;
-        var localOffset = offset / 60;
-        var peakStartLocal = (peakStartUTC + localOffset + 24) % 24;
-        var peakEndLocal = (peakEndUTC + localOffset + 24) % 24;
+        var localOffsetH = offset / 60;
+        var peakStartLocal = (peakStartUTC + localOffsetH + 24) % 24;
+        var peakEndLocal = (peakEndUTC + localOffsetH + 24) % 24;
         var peakLocalStartStr = (peakStartLocal < 10 ? "0" : "") + Math.floor(peakStartLocal) + ":00";
         var peakLocalEndStr = (peakEndLocal < 10 ? "0" : "") + Math.floor(peakEndLocal) + ":00";
 
         var el = document.getElementById("peak-info");
         if (!el) return;
-        el.innerHTML =
+        var html =
             '<p class="' + statusColor + ' font-semibold">' + status + ' &middot; ' + msg + '</p>' +
             '<p class="mt-1">Tu hora: ' + timeStr + ' (' + offsetStr + ') &middot; Peak local: ' + peakLocalStartStr + ' - ' + peakLocalEndStr + '</p>' +
             '<p class="mt-1">GLM-5.1: 3x peak / 2x off-peak &middot; <span class="text-primary">1x off-peak hasta fin de junio</span></p>';
+        if (isSpoofedUTC) {
+            html += '<p class="mt-1 opacity-60">Tu navegador reporta UTC. Si tu zona horaria es diferente, puede estar bloqueada por privacidad.</p>';
+        }
+        el.innerHTML = html;
     }
     updatePeakInfo();
     setInterval(updatePeakInfo, 60000);
