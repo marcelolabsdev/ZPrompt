@@ -7,6 +7,8 @@
     <meta name="description" content="Genera prompts estructurados para GLM optimizados para desarrollo de software.">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist@1/dist/fonts/geist-sans/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/manrope@1/dist/fonts/manrope/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="min-h-screen bg-background text-foreground font-sans antialiased">
@@ -14,9 +16,9 @@
     <header class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
         <div class="mx-auto flex h-14 max-w-4xl items-center px-4 sm:px-6">
             <div class="flex-1"></div>
-            <a href="/" class="flex items-center gap-2 text-lg font-semibold tracking-tight">
+            <a href="/" class="flex items-center gap-2 text-xl font-semibold tracking-wider">
                 <i data-lucide="zap" class="h-5 w-5 text-primary"></i>
-                <span>ZPrompt</span>
+                <span>ZPROMPT</span>
             </a>
             <div class="flex-1 flex items-center justify-end gap-3">
                 <button id="theme-toggle" class="inline-flex items-center justify-center rounded-md border border-border bg-background p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer">
@@ -34,9 +36,6 @@
                 Genera prompts estructurados
                 <span class="text-primary">para GLM</span>
             </h1>
-            <p class="mt-3 text-muted-foreground">
-                Describe tu proyecto y obtiene prompts optimizados para desarrollo de software.
-            </p>
         </section>
 
         <section class="space-y-6">
@@ -63,7 +62,7 @@
             </div>
 
             <div>
-                <label for="user-input" class="mb-2 block text-sm font-medium text-center">Describe tu proyecto o tarea</label>
+                <label for="user-input" class="mb-2 block text-sm text-muted-foreground text-center">Describe tu proyecto y obtiene prompts optimizados para desarrollo de software.</label>
                 <textarea
                     id="user-input"
                     rows="4"
@@ -163,7 +162,7 @@
     </main>
 
     <footer class="border-t border-border py-6 text-center text-xs text-muted-foreground">
-        <p>ZPrompt &mdash; Generador de prompts estructurados para GLM</p>
+        <p>ZPROMPT &mdash; Generador de prompts estructurados para GLM</p>
     </footer>
 
     <script src="/js/app.js"></script>
