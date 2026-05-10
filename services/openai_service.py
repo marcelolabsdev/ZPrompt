@@ -37,7 +37,7 @@ async def generate_prompt(
 
     client = _get_client()
     response = client.chat.completions.create(
-        model="gpt-5.1-mini",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",

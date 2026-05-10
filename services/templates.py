@@ -92,32 +92,6 @@ Basaandote en esta descripcion del usuario, rellena todos los placeholders y gen
 
 Descripcion del usuario: {user_input}"""
 
-RESEARCH_TEMPLATE = """Eres un ingeniero de meta-prompt engineering. Tu trabajo es recibir una descripcion de un tema a investigar y generar un RESEARCH PROMPT estructurado usando Context7.
-
-IMPORTANTE: Genera el prompt en espanol. Rellena todos los placeholders con informacion especifica.
-
-Genera un prompt que siga EXACTAMENTE esta estructura:
-
-## 🔍 RESEARCH con Context7
-
-use context7
-
-### TAREA DE INVESTIGACION
-Antes de implementar, investiga:
-- Documentacion oficial de [LIBRERIA + VERSION - detectada de la descripcion]
-- Mejores practicas actuales para [PATRON/TECNOLOGIA - detectado]
-- Posibles problemas conocidos
-
-### LUEGO
-Dame un plan de implementacion de 5 pasos antes de tocar cualquier archivo.
-
-### CONTEXTO ADICIONAL
-[Informacion especifica del proyecto o tarea que se va a investigar]
-
-Basaandote en esta descripcion del usuario, rellena todos los placeholders y adapta la investigacion al contexto especifico.
-
-Descripcion del usuario: {user_input}"""
-
 DEBUG_TEMPLATE = """Eres un ingeniero de meta-prompt engineering. Tu trabajo es recibir una descripcion de un problema/error y generar un DEBUG PROMPT estructurado.
 
 IMPORTANTE: Genera el prompt en espanol. Rellena todos los placeholders con informacion especifica.
@@ -151,7 +125,6 @@ TEMPLATES = {
     "system": SYSTEM_PROMPT_TEMPLATE,
     "start": START_PROMPT_TEMPLATE,
     "followup": FOLLOWUP_TEMPLATE,
-    "research": RESEARCH_TEMPLATE,
     "debug": DEBUG_TEMPLATE,
 }
 
@@ -159,7 +132,6 @@ TEMPLATE_LABELS = {
     "system": "🖥️ System Prompt",
     "start": "🚀 Start Prompt",
     "followup": "🔄 Follow-Up",
-    "research": "🔍 Research (Context7)",
     "debug": "🐛 Debugging",
 }
 
@@ -167,6 +139,5 @@ TEMPLATE_DESCRIPTIONS = {
     "system": "Define el rol y comportamiento del asistente AI para tu proyecto",
     "start": "Inicializa un proyecto nuevo con estructura base completa",
     "followup": "Agrega funcionalidad a un proyecto existente",
-    "research": "Investiga documentacion y mejores practicas antes de implementar",
     "debug": "Diagnostica y resuelve errores en tu codigo",
 }

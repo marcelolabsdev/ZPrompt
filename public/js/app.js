@@ -24,7 +24,6 @@
         system: "🖥️",
         start: "🚀",
         followup: "🔄",
-        research: "🔍",
         debug: "🐛",
     };
 
@@ -32,7 +31,6 @@
         system: "System Prompt",
         start: "Start Prompt",
         followup: "Follow-Up",
-        research: "Research (Context7)",
         debug: "Debugging",
     };
 

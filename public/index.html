@@ -20,9 +20,6 @@
                 <button id="theme-toggle" class="inline-flex items-center justify-center rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer">
                     <span id="theme-icon">☀️</span>
                 </button>
-                <a href="/docs" class="inline-flex items-center justify-center rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground">
-                    API Docs
-                </a>
             </div>
         </div>
     </header>
@@ -42,18 +39,8 @@
         <section class="space-y-6">
 
             <div>
-                <label for="user-input" class="mb-2 block text-sm font-medium">Describe tu proyecto o tarea</label>
-                <textarea
-                    id="user-input"
-                    rows="4"
-                    class="flex w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
-                    placeholder="Ejemplo: Crear una API REST con Python y FastAPI para gestion de tareas, con autenticacion JWT y base de datos PostgreSQL..."
-                ></textarea>
-            </div>
-
-            <div>
                 <label class="mb-3 block text-sm font-medium">Selecciona tipo de prompt</label>
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     <button data-type="system" class="prompt-type-card flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center transition-all hover:border-ring hover:shadow-sm cursor-pointer">
                         <span class="text-xl">🖥️</span>
                         <span class="text-xs font-medium text-card-foreground">System</span>
@@ -66,15 +53,21 @@
                         <span class="text-xl">🔄</span>
                         <span class="text-xs font-medium text-card-foreground">Follow-Up</span>
                     </button>
-                    <button data-type="research" class="prompt-type-card flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center transition-all hover:border-ring hover:shadow-sm cursor-pointer">
-                        <span class="text-xl">🔍</span>
-                        <span class="text-xs font-medium text-card-foreground">Research</span>
-                    </button>
                     <button data-type="debug" class="prompt-type-card flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center transition-all hover:border-ring hover:shadow-sm cursor-pointer">
                         <span class="text-xl">🐛</span>
                         <span class="text-xs font-medium text-card-foreground">Debug</span>
                     </button>
                 </div>
+            </div>
+
+            <div>
+                <label for="user-input" class="mb-2 block text-sm font-medium">Describe tu proyecto o tarea</label>
+                <textarea
+                    id="user-input"
+                    rows="4"
+                    class="flex w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
+                    placeholder="Ejemplo: Crear una API REST con Python y FastAPI para gestion de tareas, con autenticacion JWT y base de datos PostgreSQL..."
+                ></textarea>
             </div>
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -84,6 +77,7 @@
                         <option value="">Auto-detectar</option>
                         <option value="Python">Python</option>
                         <option value="TypeScript">TypeScript</option>
+                        <option value="Dart">Dart</option>
                         <option value="JavaScript">JavaScript</option>
                         <option value="Rust">Rust</option>
                         <option value="Go">Go</option>
@@ -101,6 +95,7 @@
                         <option value="">Ninguno / Auto</option>
                         <option value="FastAPI">FastAPI</option>
                         <option value="Django">Django</option>
+                        <option value="Flutter">Flutter</option>
                         <option value="Flask">Flask</option>
                         <option value="Next.js">Next.js</option>
                         <option value="React">React</option>
