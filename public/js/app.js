@@ -15,16 +15,17 @@
     var copyBtn = document.getElementById("copy-btn");
     var regenerateBtn = document.getElementById("regenerate-btn");
     var themeToggle = document.getElementById("theme-toggle");
-    var themeIcon = document.getElementById("theme-icon");
+    var themeIconSun = document.getElementById("theme-icon-sun");
+    var themeIconMoon = document.getElementById("theme-icon-moon");
 
     var selectedType = null;
     var lastRequest = null;
 
-    var TYPE_ICONS = {
-        system: "🖥️",
-        start: "🚀",
-        followup: "🔄",
-        debug: "🐛",
+    var TYPE_LUCIDE = {
+        system: "monitor",
+        start: "rocket",
+        followup: "repeat",
+        debug: "bug",
     };
 
     var TYPE_LABELS = {
@@ -34,21 +35,33 @@
         debug: "Debugging",
     };
 
+    lucide.createIcons();
+
+    function setThemeIcons(isDark) {
+        if (isDark) {
+            themeIconSun.classList.add("hidden");
+            themeIconMoon.classList.remove("hidden");
+        } else {
+            themeIconSun.classList.remove("hidden");
+            themeIconMoon.classList.add("hidden");
+        }
+    }
+
     function initTheme() {
         var stored = localStorage.getItem("zprompt-theme");
         if (stored === "light") {
             document.documentElement.classList.remove("dark");
-            themeIcon.textContent = "🌙";
+            setThemeIcons(false);
         } else {
             document.documentElement.classList.add("dark");
-            themeIcon.textContent = "☀️";
+            setThemeIcons(true);
         }
     }
 
     themeToggle.addEventListener("click", function () {
         var isDark = document.documentElement.classList.toggle("dark");
         localStorage.setItem("zprompt-theme", isDark ? "dark" : "light");
-        themeIcon.textContent = isDark ? "☀️" : "🌙";
+        setThemeIcons(isDark);
     });
 
     initTheme();
@@ -127,7 +140,7 @@
             btnText.textContent = "Generando...";
             btnSpinner.classList.remove("hidden");
         } else {
-            btnText.textContent = "⚡ Generar Prompt";
+            btnText.textContent = "Generar Prompt";
             btnSpinner.classList.add("hidden");
         }
     }
@@ -142,11 +155,13 @@
     }
 
     function showResult(data) {
-        resultIcon.textContent = TYPE_ICONS[data.prompt_type] || "📄";
+        var iconName = TYPE_LUCIDE[data.prompt_type] || "file-text";
+        resultIcon.innerHTML = '<i data-lucide="' + iconName + '" class="h-4 w-4"></i>';
         resultTitle.textContent = data.label || TYPE_LABELS[data.prompt_type] || "Prompt";
         resultContent.textContent = data.prompt;
         resultTimestamp.textContent = "Generado: " + new Date().toLocaleString("es-ES");
         resultSection.classList.remove("hidden");
+        lucide.createIcons();
         resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
@@ -159,9 +174,11 @@
         if (!text) return;
         try {
             await navigator.clipboard.writeText(text);
-            copyBtn.textContent = "✅ Copiado!";
+            copyBtn.innerHTML = '<i data-lucide="check" class="h-3.5 w-3.5"></i> Copiado!';
+            lucide.createIcons();
             setTimeout(function () {
-                copyBtn.textContent = "📋 Copiar";
+                copyBtn.innerHTML = '<i data-lucide="copy" class="h-3.5 w-3.5"></i> Copiar';
+                lucide.createIcons();
             }, 2000);
         } catch {
             var textarea = document.createElement("textarea");
@@ -172,9 +189,11 @@
             textarea.select();
             document.execCommand("copy");
             document.body.removeChild(textarea);
-            copyBtn.textContent = "✅ Copiado!";
+            copyBtn.innerHTML = '<i data-lucide="check" class="h-3.5 w-3.5"></i> Copiado!';
+            lucide.createIcons();
             setTimeout(function () {
-                copyBtn.textContent = "📋 Copiar";
+                copyBtn.innerHTML = '<i data-lucide="copy" class="h-3.5 w-3.5"></i> Copiar';
+                lucide.createIcons();
             }, 2000);
         }
     });

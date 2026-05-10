@@ -4,8 +4,6 @@ IMPORTANTE: Genera el prompt en espanol. Los placeholders entre corchetes deben 
 
 Genera un prompt que siga EXACTAMENTE esta estructura:
 
-## 🖥️ SYSTEM PROMPT
-
 ### ROL
 Eres un ingeniero de software senior especializado en [LENGUAJE/STACK detectado de la descripcion]. Piensas antes de actuar.
 
@@ -38,8 +36,6 @@ IMPORTANTE: Genera el prompt en espanol. Rellena todos los placeholders con info
 
 Genera un prompt que siga EXACTAMENTE esta estructura:
 
-## 🚀 START PROMPT
-
 ### CONTEXTO
 Proyecto: [NOMBRE Y DESCRIPCION BREVE - extraido de la descripcion del usuario]
 Stack: [LENGUAJE + FRAMEWORK + DB - detectado o sugerido]
@@ -49,7 +45,6 @@ Entorno: [LOCAL / DOCKER / CLOUD - segun la descripcion o sugerido]
 Iniciar estructura base del proyecto con [FUNCIONALIDAD PRINCIPAL - extraida de la descripcion].
 
 ### ESTANDARES
-- Sin ORM (SQL puro) / Con [ORM SUGERIDO] - segun el stack
 - Tipado estricto
 - Vertical Slice Architecture
 - Sin dependencias innecesarias
@@ -69,8 +64,6 @@ FOLLOWUP_TEMPLATE = """Eres un ingeniero de meta-prompt engineering. Tu trabajo 
 IMPORTANTE: Genera el prompt en espanol. Rellena todos los placeholders con informacion especifica.
 
 Genera un prompt que siga EXACTAMENTE esta estructura:
-
-## 🔄 FOLLOW-UP: Nueva funcionalidad
 
 ### CONTEXTO ACTUAL
 Ya tenemos: [LO QUE EXISTE - inferido de la descripcion del usuario]
@@ -97,8 +90,6 @@ DEBUG_TEMPLATE = """Eres un ingeniero de meta-prompt engineering. Tu trabajo es 
 IMPORTANTE: Genera el prompt en espanol. Rellena todos los placeholders con informacion especifica.
 
 Genera un prompt que siga EXACTAMENTE esta estructura:
-
-## 🐛 DEBUGGING
 
 ### PROBLEMA
 [DESCRIPCION DEL ERROR - extraida y clarificada de la descripcion del usuario]
@@ -129,10 +120,10 @@ TEMPLATES = {
 }
 
 TEMPLATE_LABELS = {
-    "system": "🖥️ System Prompt",
-    "start": "🚀 Start Prompt",
-    "followup": "🔄 Follow-Up",
-    "debug": "🐛 Debugging",
+    "system": "System Prompt",
+    "start": "Start Prompt",
+    "followup": "Follow-Up",
+    "debug": "Debugging",
 }
 
 TEMPLATE_DESCRIPTIONS = {

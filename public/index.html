@@ -7,18 +7,21 @@
     <meta name="description" content="Genera prompts estructurados para GLM optimizados para desarrollo de software.">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="min-h-screen bg-background text-foreground font-sans antialiased">
 
     <header class="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
-        <div class="mx-auto flex h-14 max-w-4xl items-center justify-between px-4 sm:px-6">
+        <div class="mx-auto flex h-14 max-w-4xl items-center px-4 sm:px-6">
+            <div class="flex-1"></div>
             <a href="/" class="flex items-center gap-2 text-lg font-semibold tracking-tight">
-                <span class="text-primary">⚡</span>
+                <i data-lucide="zap" class="h-5 w-5 text-primary"></i>
                 <span>ZPrompt</span>
             </a>
-            <div class="flex items-center gap-3">
-                <button id="theme-toggle" class="inline-flex items-center justify-center rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer">
-                    <span id="theme-icon">☀️</span>
+            <div class="flex-1 flex items-center justify-end gap-3">
+                <button id="theme-toggle" class="inline-flex items-center justify-center rounded-md border border-border bg-background p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer">
+                    <i data-lucide="sun" id="theme-icon-sun" class="h-4 w-4"></i>
+                    <i data-lucide="moon" id="theme-icon-moon" class="h-4 w-4 hidden"></i>
                 </button>
             </div>
         </div>
@@ -39,22 +42,21 @@
         <section class="space-y-6">
 
             <div>
-                <label class="mb-3 block text-sm font-medium">Selecciona tipo de prompt</label>
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    <button data-type="system" class="prompt-type-card flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center transition-all hover:border-ring hover:shadow-sm cursor-pointer">
-                        <span class="text-xl">🖥️</span>
+                <div class="grid grid-cols-4 gap-2">
+                    <button data-type="system" class="prompt-type-card flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 transition-all hover:border-ring hover:shadow-sm cursor-pointer">
+                        <i data-lucide="monitor" class="h-4 w-4"></i>
                         <span class="text-xs font-medium text-card-foreground">System</span>
                     </button>
-                    <button data-type="start" class="prompt-type-card flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center transition-all hover:border-ring hover:shadow-sm cursor-pointer">
-                        <span class="text-xl">🚀</span>
+                    <button data-type="start" class="prompt-type-card flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 transition-all hover:border-ring hover:shadow-sm cursor-pointer">
+                        <i data-lucide="rocket" class="h-4 w-4"></i>
                         <span class="text-xs font-medium text-card-foreground">Start</span>
                     </button>
-                    <button data-type="followup" class="prompt-type-card flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center transition-all hover:border-ring hover:shadow-sm cursor-pointer">
-                        <span class="text-xl">🔄</span>
+                    <button data-type="followup" class="prompt-type-card flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 transition-all hover:border-ring hover:shadow-sm cursor-pointer">
+                        <i data-lucide="repeat" class="h-4 w-4"></i>
                         <span class="text-xs font-medium text-card-foreground">Follow-Up</span>
                     </button>
-                    <button data-type="debug" class="prompt-type-card flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center transition-all hover:border-ring hover:shadow-sm cursor-pointer">
-                        <span class="text-xl">🐛</span>
+                    <button data-type="debug" class="prompt-type-card flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 transition-all hover:border-ring hover:shadow-sm cursor-pointer">
+                        <i data-lucide="bug" class="h-4 w-4"></i>
                         <span class="text-xs font-medium text-card-foreground">Debug</span>
                     </button>
                 </div>
@@ -116,7 +118,8 @@
                 class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
                 disabled
             >
-                <span id="btn-text">⚡ Generar Prompt</span>
+                <i data-lucide="zap" class="h-4 w-4"></i>
+                <span id="btn-text">Generar Prompt</span>
                 <span id="btn-spinner" class="hidden">
                     <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                 </span>
@@ -134,15 +137,17 @@
             <div class="rounded-lg border border-border bg-card shadow-sm">
                 <div class="flex items-center justify-between border-b border-border px-4 py-3">
                     <div class="flex items-center gap-2">
-                        <span id="result-icon" class="text-lg">🖥️</span>
-                        <h2 id="result-title" class="text-sm font-semibold text-card-foreground">System Prompt</h2>
+                        <span id="result-icon"></span>
+                        <h2 id="result-title" class="text-sm font-semibold text-card-foreground"></h2>
                     </div>
                     <div class="flex items-center gap-2">
                         <button id="copy-btn" class="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer">
-                            📋 Copiar
+                            <i data-lucide="copy" class="h-3.5 w-3.5"></i>
+                            Copiar
                         </button>
                         <button id="regenerate-btn" class="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer">
-                            🔄 Regenerar
+                            <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
+                            Regenerar
                         </button>
                     </div>
                 </div>
