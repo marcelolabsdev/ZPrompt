@@ -225,21 +225,21 @@
         return "UTC" + sign + (offsetH < 10 ? "0" : "") + offsetH + ":" + (offsetM < 10 ? "0" : "") + offsetM;
     }
 
-    function calcOffsetFromTzName(tzName) {
-        try {
-            var now = new Date();
-            var utcStr = now.toLocaleString("en-US", { timeZone: "UTC" });
-            var localStr = now.toLocaleString("en-US", { timeZone: tzName });
-            return (new Date(localStr) - new Date(utcStr)) / 60000;
-        } catch (e) {
-            return 0;
-        }
-    }
-
     var cachedOffset = null;
+
+    (function loadCachedTz() {
+        var cached = localStorage.getItem("zprompt-tz-offset");
+        if (cached !== null) {
+            cachedOffset = parseInt(cached, 10);
+        }
+    })();
 
     function detectOffsetAsync() {
         var browserOffset = -new Date().getTimezoneOffset();
+        if (browserOffset !== 0) {
+            cachedOffset = browserOffset;
+            return;
+        }
         try {
             var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
             if (tz && tz !== "UTC") {
@@ -248,35 +248,23 @@
             }
         } catch (e) {}
 
-        if (browserOffset !== 0) {
-            cachedOffset = browserOffset;
+        if (cachedOffset !== null && cachedOffset !== 0) {
             return;
         }
 
         cachedOffset = 0;
 
-        fetch("https://ipapi.co/json/")
+        fetch("/api/timezone")
             .then(function (r) { return r.json(); })
             .then(function (data) {
-                if (data && data.timezone && data.timezone !== "UTC") {
-                    var realOffset = calcOffsetFromTzName(data.timezone);
-                    if (realOffset !== 0) {
-                        cachedOffset = realOffset;
-                        localStorage.setItem("zprompt-tz-offset", realOffset);
-                        localStorage.setItem("zprompt-tz-name", data.timezone);
-                        updatePeakInfo();
-                    }
+                if (data && data.offset && data.offset !== 0) {
+                    cachedOffset = data.offset;
+                    localStorage.setItem("zprompt-tz-offset", data.offset);
+                    updatePeakInfo();
                 }
             })
             .catch(function () {});
     }
-
-    (function loadCachedTz() {
-        var cached = localStorage.getItem("zprompt-tz-offset");
-        if (cached !== null) {
-            cachedOffset = parseInt(cached, 10);
-        }
-    })();
 
     detectOffsetAsync();
 
