@@ -254,13 +254,45 @@
 
         cachedOffset = 0;
 
+        function onTzResolved(offset) {
+            if (offset && offset !== 0) {
+                cachedOffset = offset;
+                localStorage.setItem("zprompt-tz-offset", offset);
+                updatePeakInfo();
+            }
+        }
+
         fetch("/api/timezone")
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 if (data && data.offset && data.offset !== 0) {
-                    cachedOffset = data.offset;
-                    localStorage.setItem("zprompt-tz-offset", data.offset);
-                    updatePeakInfo();
+                    onTzResolved(data.offset);
+                    throw "done";
+                }
+                return fetch("https://ipwho.is/");
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data && data.timezone && data.timezone.offset != null) {
+                    var offsetMin = Math.round(data.timezone.offset / 60);
+                    if (offsetMin !== 0) {
+                        onTzResolved(offsetMin);
+                        throw "done";
+                    }
+                }
+                return fetch("https://ipapi.co/json/");
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data && data.utc_offset) {
+                    var s = data.utc_offset;
+                    var sign = s.charAt(0) === "+" ? 1 : -1;
+                    var h = parseInt(s.substring(1, 3), 10);
+                    var m = parseInt(s.substring(3, 5), 10);
+                    var total = sign * (h * 60 + m);
+                    if (total !== 0) {
+                        onTzResolved(total);
+                    }
                 }
             })
             .catch(function () {});
