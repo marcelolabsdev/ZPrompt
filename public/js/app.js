@@ -317,7 +317,7 @@
         var isPeak = utcH >= 6 && utcH < 10;
         var status = isPeak ? "PEAK" : "OFF-PEAK";
         var statusColor = isPeak ? "text-destructive" : "text-primary";
-        var msg = isPeak ? "Horas pico - uso limitado" : "Buen momento para usar Z.ai";
+        var msg = isPeak ? "Horas pico - uso limitado" : "Buen momento para usar GLM";
 
         var peakStartUTC = 6;
         var peakEndUTC = 10;
@@ -330,7 +330,6 @@
         var el = document.getElementById("peak-info");
         if (!el) return;
         el.innerHTML =
-            '<p class="text-xs text-muted-foreground mb-1">C\u00e1lculo para GLM Coding Plan</p>' +
             '<p class="' + statusColor + ' font-semibold">' + status + ' &middot; ' + msg + '</p>' +
             '<p class="mt-1">Tu hora: ' + timeStr + ' (' + offsetStr + ') &middot; Peak local: ' + peakLocalStartStr + ' - ' + peakLocalEndStr + '</p>' +
             '<p class="mt-1">GLM-5.1: 3x peak / 2x off-peak &middot; <span class="text-primary">1x off-peak hasta fin de junio</span></p>';
