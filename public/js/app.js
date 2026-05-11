@@ -160,7 +160,7 @@
             btnText.textContent = "Generando...";
             btnSpinner.classList.remove("hidden");
         } else {
-            btnText.textContent = "Generar Prompt";
+            btnText.textContent = "GENERAR PROMPT";
             btnSpinner.classList.add("hidden");
         }
     }
@@ -234,7 +234,7 @@
         }
     })();
 
-    function detectOffsetAsync() {
+    async function detectOffsetAsync() {
         var browserOffset = -new Date().getTimezoneOffset();
         if (browserOffset !== 0) {
             cachedOffset = browserOffset;
@@ -252,50 +252,52 @@
             return;
         }
 
-        cachedOffset = 0;
-
-        function onTzResolved(offset) {
-            if (offset && offset !== 0) {
-                cachedOffset = offset;
-                localStorage.setItem("zprompt-tz-offset", offset);
-                updatePeakInfo();
-            }
+        async function tryIpwhois() {
+            try {
+                var r = await fetch("https://ipwho.is/");
+                var d = await r.json();
+                if (d && d.timezone && d.timezone.offset != null) {
+                    var m = Math.round(d.timezone.offset / 60);
+                    if (m !== 0) return m;
+                }
+            } catch (e) {}
+            return null;
         }
 
-        fetch("/api/timezone")
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-                if (data && data.offset && data.offset !== 0) {
-                    onTzResolved(data.offset);
-                    throw "done";
-                }
-                return fetch("https://ipwho.is/");
-            })
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-                if (data && data.timezone && data.timezone.offset != null) {
-                    var offsetMin = Math.round(data.timezone.offset / 60);
-                    if (offsetMin !== 0) {
-                        onTzResolved(offsetMin);
-                        throw "done";
-                    }
-                }
-                return fetch("https://ipapi.co/json/");
-            })
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-                if (data && data.utc_offset) {
-                    var s = data.utc_offset;
+        async function tryIpapi() {
+            try {
+                var r = await fetch("https://ipapi.co/json/");
+                var d = await r.json();
+                if (d && d.utc_offset) {
+                    var s = d.utc_offset;
                     var sign = s.charAt(0) === "+" ? 1 : -1;
                     var h = parseInt(s.substring(1, 3), 10);
-                    var m = parseInt(s.substring(3, 5), 10);
-                    var total = sign * (h * 60 + m);
-                    if (total !== 0) {
-                        onTzResolved(total);
-                    }
+                    var mm = parseInt(s.substring(3, 5), 10);
+                    var total = sign * (h * 60 + mm);
+                    if (total !== 0) return total;
                 }
-            })
-            .catch(function () {});
+            } catch (e) {}
+            return null;
+        }
+
+        async function tryServerApi() {
+            try {
+                var r = await fetch("/api/timezone");
+                var d = await r.json();
+                if (d && d.offset && d.offset !== 0) return d.offset;
+            } catch (e) {}
+            return null;
+        }
+
+        var offset = await tryIpwhois() || await tryIpapi() || await tryServerApi();
+
+        if (offset) {
+            cachedOffset = offset;
+            localStorage.setItem("zprompt-tz-offset", offset);
+            updatePeakInfo();
+        } else {
+            cachedOffset = 0;
+        }
     }
 
     detectOffsetAsync();
@@ -328,6 +330,7 @@
         var el = document.getElementById("peak-info");
         if (!el) return;
         el.innerHTML =
+            '<p class="text-xs text-muted-foreground mb-1">C\u00e1lculo para GLM Coding Plan</p>' +
             '<p class="' + statusColor + ' font-semibold">' + status + ' &middot; ' + msg + '</p>' +
             '<p class="mt-1">Tu hora: ' + timeStr + ' (' + offsetStr + ') &middot; Peak local: ' + peakLocalStartStr + ' - ' + peakLocalEndStr + '</p>' +
             '<p class="mt-1">GLM-5.1: 3x peak / 2x off-peak &middot; <span class="text-primary">1x off-peak hasta fin de junio</span></p>';
