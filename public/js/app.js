@@ -174,24 +174,12 @@
         errorSection.classList.add("hidden");
     }
 
-    function formatLocalDate(date) {
-        var offset = cachedOffset !== null ? cachedOffset : (-new Date().getTimezoneOffset());
-        var localDate = new Date(date.getTime() + (date.getTimezoneOffset() * 60000) + (offset * 60000));
-        var d = localDate.getDate();
-        var mo = localDate.getMonth() + 1;
-        var y = localDate.getFullYear();
-        var h = localDate.getHours();
-        var m = localDate.getMinutes();
-        var s = localDate.getSeconds();
-        return (d < 10 ? "0" : "") + d + "/" + (mo < 10 ? "0" : "") + mo + "/" + y + ", " + (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
-    }
-
     function showResult(data) {
         var iconName = TYPE_LUCIDE[data.prompt_type] || "file-text";
         resultIcon.innerHTML = '<i data-lucide="' + iconName + '" class="h-4 w-4"></i>';
         resultTitle.textContent = data.label || TYPE_LABELS[data.prompt_type] || "Prompt";
         resultContent.textContent = data.prompt;
-        resultTimestamp.textContent = "Generado: " + formatLocalDate(new Date());
+        resultTimestamp.textContent = "Generado: " + new Date().toLocaleString("es-ES");
         resultSection.classList.remove("hidden");
         lucide.createIcons();
         resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -246,18 +234,6 @@
         }
     })();
 
-    async function refreshOffsetAsync() {
-        try {
-            var r = await fetch("/api/timezone");
-            var d = await r.json();
-            if (d && d.offset && d.offset !== 0) {
-                cachedOffset = d.offset;
-                localStorage.setItem("zprompt-tz-offset", d.offset);
-                updatePeakInfo();
-            }
-        } catch (e) {}
-    }
-
     async function detectOffsetAsync() {
         var browserOffset = -new Date().getTimezoneOffset();
         if (browserOffset !== 0) {
@@ -273,7 +249,6 @@
         } catch (e) {}
 
         if (cachedOffset !== null && cachedOffset !== 0) {
-            refreshOffsetAsync();
             return;
         }
 
@@ -305,23 +280,6 @@
             return null;
         }
 
-        async function tryWorldTimeApi() {
-            try {
-                var r = await fetch("https://worldtimeapi.org/api/ip");
-                var d = await r.json();
-                if (d && d.utc_offset) {
-                    var s = d.utc_offset;
-                    var sign = s.charAt(0) === "+" ? 1 : -1;
-                    var parts = s.substring(1).split(":");
-                    var h = parseInt(parts[0], 10);
-                    var mm = parseInt(parts[1], 10);
-                    var total = sign * (h * 60 + mm);
-                    if (total !== 0) return total;
-                }
-            } catch (e) {}
-            return null;
-        }
-
         async function tryServerApi() {
             try {
                 var r = await fetch("/api/timezone");
@@ -331,7 +289,7 @@
             return null;
         }
 
-        var offset = await tryServerApi() || await tryIpwhois() || await tryIpapi() || await tryWorldTimeApi();
+        var offset = await tryIpwhois() || await tryIpapi() || await tryServerApi();
 
         if (offset) {
             cachedOffset = offset;
