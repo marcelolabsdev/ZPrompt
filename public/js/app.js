@@ -246,6 +246,18 @@
         }
     })();
 
+    async function refreshOffsetAsync() {
+        try {
+            var r = await fetch("/api/timezone");
+            var d = await r.json();
+            if (d && d.offset && d.offset !== 0) {
+                cachedOffset = d.offset;
+                localStorage.setItem("zprompt-tz-offset", d.offset);
+                updatePeakInfo();
+            }
+        } catch (e) {}
+    }
+
     async function detectOffsetAsync() {
         var browserOffset = -new Date().getTimezoneOffset();
         if (browserOffset !== 0) {
@@ -261,6 +273,7 @@
         } catch (e) {}
 
         if (cachedOffset !== null && cachedOffset !== 0) {
+            refreshOffsetAsync();
             return;
         }
 
@@ -318,7 +331,7 @@
             return null;
         }
 
-        var offset = await tryIpwhois() || await tryIpapi() || await tryWorldTimeApi() || await tryServerApi();
+        var offset = await tryServerApi() || await tryIpwhois() || await tryIpapi() || await tryWorldTimeApi();
 
         if (offset) {
             cachedOffset = offset;

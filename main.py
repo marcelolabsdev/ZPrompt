@@ -269,7 +269,21 @@ def serve_index():
 def get_timezone(request: Request):
     client_ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
     if not client_ip or client_ip == "127.0.0.1" or client_ip == "::1":
-        client_ip = request.client.host if request.client else ""
+        client_ip = ""
+    if client_ip:
+        client_ip = request.client.host if request.client and request.client.host not in ("127.0.0.1", "::1") else ""
+
+    try:
+        url = f"http://ip-api.com/json/{client_ip}?fields=status,timezone,offset" if client_ip else "http://ip-api.com/json/?fields=status,timezone,offset"
+        req = urllib.request.Request(url, headers={"User-Agent": "ZPrompt/1.0"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read().decode())
+        if data.get("status") == "success" and data.get("offset") is not None:
+            offset_minutes = data["offset"] // 60
+            return {"timezone": data.get("timezone", "UTC"), "offset": offset_minutes}
+    except Exception:
+        pass
+
     try:
         url = f"https://ipapi.co/{client_ip}/json/" if client_ip else "https://ipapi.co/json/"
         req = urllib.request.Request(url, headers={"User-Agent": "ZPrompt/1.0"})
