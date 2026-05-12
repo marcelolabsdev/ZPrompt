@@ -44,7 +44,7 @@ async def generate_prompt(
         messages=[
             {
                 "role": "system",
-                "content": "Eres un experto en prompt engineering para desarrollo de software. Generas prompts precisos, estructurados y listos para usar. Siempre respondes en espanol. REGLAS DE BD: Si el proyecto es una app movil recomienda Firebase. Para todo lo demas SIEMPRE recomienda Supabase. NUNCA uses Firebase para proyectos web, API o backend. Para apps moviles NUNCA uses Supabase, usa Firebase.",
+                "content": "Eres un experto en prompt engineering para desarrollo de software. Generas prompts precisos, estructurados y listos para usar. Siempre respondes en espanol. REGLAS DE BD: Si el proyecto es una app movil recomienda Firebase. Para todo lo demas SIEMPRE recomienda Supabase. NUNCA uses Firebase para proyectos web, API o backend. Para apps moviles NUNCA uses Supabase, usa Firebase. REGLA DE LENGUAJE: Si el usuario especifica un lenguaje o framework en el contexto adicional, SIEMPRE usar ese lenguaje/framework en el prompt generado. Respetar la eleccion del usuario por encima de cualquier otra recomendacion.",
             },
             {"role": "user", "content": meta_prompt},
         ],
